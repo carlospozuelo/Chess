@@ -37,8 +37,11 @@ public class Principal {
         PropertyChangeSupport supportModelo = new PropertyChangeSupport(this);
         PropertyChangeSupport supportControlador = new PropertyChangeSupport(this);
 
-        Modelo modelo = new Modelo(supportModelo, tablero);
-        Vista vista = new Vista(tablero);
+        boolean[][] validez = new boolean[8][8];
+
+        Modelo modelo = new Modelo(supportModelo, tablero, validez);
+        Vista vista = new Vista(tablero, validez);
+        vista.vaciar();
         Controlador controlador = new Controlador(supportControlador);
 
         supportModelo.addPropertyChangeListener(vista);

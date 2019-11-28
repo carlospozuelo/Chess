@@ -36,6 +36,7 @@ public class Peon extends Pieza {
             aceptable = aceptable || (y1 == y + 1 && x == x1);
             // TODO : implementar que el peón pueda comer
         }
+        // TODO : arreglar ES PRIMER
         esPrimer = esPrimer && !aceptable;
         return aceptable;
     }
