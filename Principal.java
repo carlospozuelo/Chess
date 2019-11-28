@@ -1,3 +1,6 @@
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeSupport;
 
 public class Principal {
@@ -32,9 +35,28 @@ public class Principal {
         tablero[7][7] = new Torre(7, 0, false);
 
         PropertyChangeSupport supportModelo = new PropertyChangeSupport(this);
+        PropertyChangeSupport supportControlador = new PropertyChangeSupport(this);
 
         Modelo modelo = new Modelo(supportModelo, tablero);
-        modelo.print();
+        Vista vista = new Vista(tablero);
+        Controlador controlador = new Controlador(supportControlador);
+
+        supportModelo.addPropertyChangeListener(vista);
+        supportControlador.addPropertyChangeListener(modelo);
+
+        vista.addMouseListener(controlador);
+
+        Frame frame = new Frame();
+        frame.add(vista);
+        frame.setSize(Vista.CELLSIZE * 8 + 30, Vista.CELLSIZE * 8 + 40);
+        frame.setVisible(true);
+        frame.addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                e.getWindow().dispose();
+            }
+        });
     }
 
     public static void main(String[] args) {

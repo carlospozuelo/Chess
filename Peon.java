@@ -1,6 +1,6 @@
 public class Peon extends Pieza {
 
-    private boolean esPrimer;
+    private boolean esPrimer = true;
     private Pieza[][] tablero;
 
     @Override
@@ -25,17 +25,17 @@ public class Peon extends Pieza {
                 // Puede moverse DOS hacia ABAJO (es el jugador de ARRIBA)
                 aceptable = super.getY() == y + 2;
             }
+            esPrimer = false;
+        }
+        // Es un movimiento normal y corriente
+        if (super.isJugadorA()) {
+            // Puede moverse UNO hacia ARRIBA (es el jugador de abajo)
+            aceptable = super.getY() == y - 1;
+            // TODO : implementar que el peón pueda comer
         } else {
-            // Es un movimiento normal y corriente
-            if (super.isJugadorA()) {
-                // Puede moverse UNO hacia ARRIBA (es el jugador de abajo)
-                aceptable = super.getY() == y - 1;
-                // TODO : implementar que el peón pueda comer
-            } else {
-                // Puede moverse UNO hacia ABAJO (es el jugador de ARRIBA)
-                aceptable = super.getY() == y + 1;
-                // TODO : implementar que el peón pueda comer
-            }
+            // Puede moverse UNO hacia ABAJO (es el jugador de ARRIBA)
+            aceptable = super.getY() == y + 1;
+            // TODO : implementar que el peón pueda comer
         }
         return aceptable;
     }

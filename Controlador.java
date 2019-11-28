@@ -12,18 +12,21 @@ public class Controlador implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        // if (e.getButton() == MouseEvent.BUTTON1) {
-        //}
+
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            support.firePropertyChange("click", 0, e.getPoint());
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            support.firePropertyChange("release", 0, e.getPoint());
+        }
     }
 
     @Override
