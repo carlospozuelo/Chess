@@ -1,7 +1,7 @@
 public class Caballo extends Pieza {
 
-    Caballo(int x, int y, boolean jugadorA) {
-        super(x, y, jugadorA);
+    Caballo(boolean jugadorA) {
+        super(jugadorA);
     }
 
     @Override
@@ -10,29 +10,29 @@ public class Caballo extends Pieza {
     }
 
     @Override
-    public boolean aceptable(int x, int y) {
-        if (super.getX() == x + 1 && super.getY() == y + 2 ) {
+    public boolean aceptable(int x0, int y0, int x1, int y1) {
+        if (x1 == x0 + 1 && y1 == y0 + 2 ) {
             return true;
         }
-        if (super.getX() == x + 1 && super.getY() == y - 2) {
+        if (x1 == x0 + 1 && y1 == y0 - 2) {
             return true;
         }
-        if (super.getX() == x - 1 && super.getY() == y + 2 ) {
+        if (x1 == x0 - 1 && y1 == y0 + 2 ) {
             return true;
         }
-        if (super.getX() == x - 1 && super.getY() == y - 2) {
+        if (x1 == x0 - 1 && y1 == y0 - 2) {
             return true;
         }
-        if (super.getX() == x + 2 && super.getY() == y + 1) {
+        if (x1 == x0 + 2 && y1 == y0 + 1) {
             return true;
         }
-        if (super.getX() == x + 2 && super.getY() == y - 1) {
+        if (x1 == x0 + 2 && y1 == y0 - 1) {
             return true;
         }
-        if (super.getX() == x - 2 && super.getY() == y + 1) {
+        if (x1 == x0 - 2 && y1 == y0 + 1) {
             return true;
         }
-        if (super.getX() == x - 2&& super.getY() == y - 1) {
+        if (x1 == x0 - 2&& y1 == y0 - 1) {
             return true;
         }
         return false;

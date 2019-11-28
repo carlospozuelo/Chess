@@ -1,7 +1,7 @@
 public class Torre extends Pieza {
 
-    Torre(int x, int y, boolean jugadorA) {
-         super(x, y, jugadorA);
+    Torre(boolean jugadorA) {
+         super(jugadorA);
     }
 
     @Override
@@ -10,7 +10,7 @@ public class Torre extends Pieza {
     }
 
     @Override
-    public boolean aceptable(int x, int y) {
-        return (super.getX() == x && super.getY() != y) || (super.getY() == y && super.getX() != x);
+    public boolean aceptable(int x0, int y0, int x, int y) {
+        return (x0 == x && y0 != y) || (y0 == y && x0 != x);
     }
 }

@@ -8,35 +8,35 @@ public class Peon extends Pieza {
         return "P";
     }
 
-    Peon(int x, int y, boolean isJugadorA, Pieza[][] tablero) {
-        super(x, y, isJugadorA);
+    Peon(boolean isJugadorA, Pieza[][] tablero) {
+        super(isJugadorA);
         this.tablero = tablero;
     }
 
     @Override
-    public boolean aceptable(int x, int y) {
+    public boolean aceptable(int x, int y, int x1, int y1) {
         boolean aceptable = false;
         if (esPrimer) {
             // Puede moverse dos hacia delante
-            if (super.isJugadorA()) {
+            if (!super.isJugadorA()) {
                 // Puede moverse DOS HACIA ARRIBA (es el jugador de abajo)
-                aceptable = super.getY() == y - 2;
+                aceptable = y1 == y - 2 && x == x1;
             } else {
                 // Puede moverse DOS hacia ABAJO (es el jugador de ARRIBA)
-                aceptable = super.getY() == y + 2;
+                aceptable = y1 == y + 2 && x == x1;
             }
-            esPrimer = false;
         }
         // Es un movimiento normal y corriente
-        if (super.isJugadorA()) {
+        if (!super.isJugadorA()) {
             // Puede moverse UNO hacia ARRIBA (es el jugador de abajo)
-            aceptable = super.getY() == y - 1;
+            aceptable = aceptable || (y1 == y - 1 && x == x1);
             // TODO : implementar que el peón pueda comer
         } else {
             // Puede moverse UNO hacia ABAJO (es el jugador de ARRIBA)
-            aceptable = super.getY() == y + 1;
+            aceptable = aceptable || (y1 == y + 1 && x == x1);
             // TODO : implementar que el peón pueda comer
         }
+        esPrimer = esPrimer && !aceptable;
         return aceptable;
     }
 }

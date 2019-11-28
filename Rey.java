@@ -1,7 +1,7 @@
 public class Rey extends Pieza {
 
-    Rey(int x, int y, boolean jugadorA) {
-        super(x, y, jugadorA);
+    Rey(boolean jugadorA) {
+        super(jugadorA);
     }
 
     @Override
@@ -10,29 +10,29 @@ public class Rey extends Pieza {
     }
 
     @Override
-    public boolean aceptable(int x, int y) {
-        if (super.getX() == x + 1 && super.getY() == y + 1 ) {
+    public boolean aceptable(int x0, int y0, int x, int y) {
+        if (x0 == x + 1 && y0 == y + 1 ) {
             return true;
         }
-        if (super.getX() == x + 1 && super.getY() == y) {
+        if (x0 == x + 1 && y0 == y) {
             return true;
         }
-        if (super.getX() == x + 1 && super.getY() == y - 1 ) {
+        if (x0 == x + 1 && y0 == y - 1 ) {
             return true;
         }
-        if (super.getX() == x - 1 && super.getY() == y + 1) {
+        if (x0 == x - 1 && y0 == y + 1) {
             return true;
         }
-        if (super.getX() == x - 1 && super.getY() == y) {
+        if (x0 == x - 1 && y0 == y) {
             return true;
         }
-        if (super.getX() == x - 1 && super.getY() == y - 1) {
+        if (x0 == x - 1 && y0 == y - 1) {
             return true;
         }
-        if (super.getX() == x && super.getY() == y + 1) {
+        if (x0 == x && y0 == y + 1) {
             return true;
         }
-        if (super.getX() == x && super.getY() == y - 1) {
+        if (x0 == x && y0 == y - 1) {
             return true;
         }
         return false;

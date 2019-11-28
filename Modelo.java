@@ -42,31 +42,23 @@ public class Modelo implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("click")) {
             this.aux = (Point2D) evt.getNewValue();
-            System.out.print("click: [" + getY(aux) + ", " + getX(aux) + "]");
-            if (valido(getX(aux), getY(aux))) {
-                if (tablero[getY(aux)][getX(aux)] != null)
-                    System.out.print(". Figura: " + tablero[getY(aux)][getX(aux)].toString());
-                else System.out.print(". Casilla vacía.");
-            }
-            System.out.println();
         }
         if (evt.getPropertyName().equals("release")) {
             Point2D destino = (Point2D) evt.getNewValue();
-            if (valido(getX(aux), getY(aux)) && tablero[getY(aux)][getX(aux)] != null) {
+            int x0 = getX(aux); int y0 = getY(aux);
+            int x1 = getX(destino); int y1 = getY(destino);
+            System.out.println("Origen: [x=" + x0 + ", y=" + y0 + "]. Destino: [x="+ x1 + ", y=" + y1 + "]");
+            if (valido(x0, y0) && tablero[y0][x0] != null) {
                 // La casilla inicial es valida
-                if (valido(getX(destino), getY(destino)) && (tablero[getY(destino)][getX(destino)] == null || tablero[getY(destino)][getX(destino)].isJugadorA() != tablero[getY(aux)][getX(aux)].isJugadorA())) {
+                if (valido(x1, y1) && (tablero[y1][x1] == null || tablero[y1][x1].isJugadorA() != tablero[y0][x0].isJugadorA())) {
                     // El destino es valido (dentro del tablero, movimiento aceptable y sin pieza o con una pieza enemiga)
-                    if (tablero[getY(aux)][getX(aux)].aceptable(getX(destino), getY(destino))) {
-                        System.out.println("el movimiento es aceptable");
-                    } else  {
-                        System.out.println("el movimiento NO es aceptable");
+                    if (tablero[y0][x0].aceptable(x0, y0, x1, y1)) {
+                        tablero[y1][x1] = tablero[y0][x0];
+                        tablero[getY(aux)][getX(aux)] = null;
+                        support.firePropertyChange("movimiento", false, true);
                     }
-                    tablero[getY(destino)][getX(destino)] = tablero[getY(aux)][getX(aux)];
-                    tablero[getY(aux)][getX(aux)] = null;
                 }
             }
-            System.out.println("release");
         }
-        support.firePropertyChange("", 0, 1);
     }
 }

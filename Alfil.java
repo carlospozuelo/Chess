@@ -1,7 +1,7 @@
 public class Alfil extends Pieza {
 
-    Alfil(int x, int y, boolean isJugadorA) {
-        super(x, y, isJugadorA);
+    Alfil(boolean isJugadorA) {
+        super(isJugadorA);
     }
 
     @Override
@@ -10,7 +10,7 @@ public class Alfil extends Pieza {
     }
 
     @Override
-    public boolean aceptable(int x, int y) {
-        return (super.getX() + super.getY() == x + y) || (super.getX() - super.getY() == x - y);
+    public boolean aceptable(int x0, int y0, int x1, int y1) {
+        return (x1 + y1 == x0 + y0) || (x1 - y1 == x0 - y0);
     }
 }

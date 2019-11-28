@@ -45,6 +45,5 @@ public class Vista extends Canvas implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         repaint();
-        System.out.println("owo");
     }
 }

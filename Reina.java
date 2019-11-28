@@ -5,12 +5,12 @@ public class Reina extends Pieza {
         return "Q";
     }
 
-    Reina(int x, int y, boolean isJugadorA) {
-        super(x, y, isJugadorA);
+    Reina(boolean isJugadorA) {
+        super(isJugadorA);
     }
 
     @Override
-    public boolean aceptable(int x, int y) {
-        return false;
+    public boolean aceptable(int x0, int y0, int x1, int y1) {
+        return (x1 + y1 == x0 + y0) || (x1 - y1 == x0 - y0) || (x0 == x1 && y0 != y1) || (y0 == y1 && x0 != x1);
     }
 }
