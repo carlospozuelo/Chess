@@ -10,7 +10,7 @@ public class Rey extends Pieza {
     }
 
     @Override
-    public boolean aceptable(int x0, int y0, int x, int y) {
+    public boolean aceptable(int x0, int y0, int x, int y, Pieza[][] tablero) {
         if (x0 == x + 1 && y0 == y + 1 ) {
             return true;
         }

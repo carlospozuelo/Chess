@@ -44,7 +44,7 @@ public class Modelo implements PropertyChangeListener {
     private void getValidez(int y, int x) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (tablero[y][x].aceptable(x, y, i, j))
+                if (tablero[y][x].aceptable(x, y, i, j, tablero))
                     this.validez[i][j] = true;
             }
         }
@@ -55,7 +55,6 @@ public class Modelo implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("click")) {
             this.aux = (Point2D) evt.getNewValue();
-            System.out.println(this.aux);
             int x = getX(aux); int y = getY(aux);
             if (valido(x, y) && tablero[y][x] != null) {
                 this.getValidez(y, x);
@@ -65,7 +64,6 @@ public class Modelo implements PropertyChangeListener {
             Point2D destino = (Point2D) evt.getNewValue();
             int x0 = getX(aux); int y0 = getY(aux);
             int x1 = getX(destino); int y1 = getY(destino);
-            System.out.println("Origen: [x=" + x0 + ", y=" + y0 + "]. Destino: [x="+ x1 + ", y=" + y1 + "]");
             if (valido(x0, y0) && tablero[y0][x0] != null) {
                 // La casilla inicial es valida
                 if (valido(x1, y1) && (tablero[y1][x1] == null || tablero[y1][x1].isJugadorA() != tablero[y0][x0].isJugadorA())) {

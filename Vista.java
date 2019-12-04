@@ -25,6 +25,9 @@ public class Vista extends Canvas implements PropertyChangeListener {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (validez[i][j]) {
+                    //if (tablero[j][i] == null)
+                      //  g2d.setColor(Color.GREEN);
+                    //else
                     g2d.setColor(Color.GREEN);
                 } else if ((i + j) % 2 == 0) {
                     g2d.setColor(Color.decode("#c0a878"));
