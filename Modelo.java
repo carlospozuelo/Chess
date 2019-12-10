@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -10,6 +11,7 @@ public class Modelo implements PropertyChangeListener {
     private Point2D aux;
     PropertyChangeSupport support;
     private boolean[][] validez;
+    private boolean turno = false;
 
     Modelo(PropertyChangeSupport support, Pieza[][] tablero, boolean[][] validez) {
         this.support = support;
@@ -51,12 +53,38 @@ public class Modelo implements PropertyChangeListener {
         this.support.firePropertyChange("validez", false, true);
     }
 
+    private void promocion(int x, int y, boolean isJugadorA) {
+        String[] options = {"Reina", "Torre", "Alfil", "Caballo"};
+        int opcion = JOptionPane.showOptionDialog(null, "¡Tu peón ha llegado hasta el final! Selecciona una ficha para transformarlo",
+                "Selecciona una pieza",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+        System.out.println(opcion);
+        switch(opcion) {
+            case 0:
+                tablero[y][x] = new Reina(isJugadorA);
+                break;
+            case 1:
+                tablero[y][x] = new Torre(isJugadorA);
+                break;
+            case 2:
+                tablero[y][x] = new Alfil(isJugadorA);
+                break;
+            case 3:
+                tablero[y][x] = new Caballo(isJugadorA);
+                break;
+            default:
+                promocion(x, y, isJugadorA);
+                break;
+        }
+        turno = isJugadorA;
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("click")) {
             this.aux = (Point2D) evt.getNewValue();
             int x = getX(aux); int y = getY(aux);
-            if (valido(x, y) && tablero[y][x] != null) {
+            if (valido(x, y) && tablero[y][x] != null && tablero[y][x].isJugadorA() == this.turno) {
                 this.getValidez(y, x);
             }
         }
@@ -66,12 +94,20 @@ public class Modelo implements PropertyChangeListener {
             int x1 = getX(destino); int y1 = getY(destino);
             if (valido(x0, y0) && tablero[y0][x0] != null) {
                 // La casilla inicial es valida
-                if (valido(x1, y1) && (tablero[y1][x1] == null || tablero[y1][x1].isJugadorA() != tablero[y0][x0].isJugadorA())) {
-                    // El destino es valido (dentro del tablero, movimiento aceptable y sin pieza o con una pieza enemiga)
-                    if (this.validez[x1][y1]) {
-                        tablero[y1][x1] = tablero[y0][x0];
-                        tablero[getY(aux)][getX(aux)] = null;
-                        support.firePropertyChange("movimiento", false, true);
+                if (tablero[y0][x0].isJugadorA() == this.turno) {
+                    if (valido(x1, y1) && (tablero[y1][x1] == null || tablero[y1][x1].isJugadorA() != tablero[y0][x0].isJugadorA())) {
+                        // El destino es valido (dentro del tablero, movimiento aceptable y sin pieza o con una pieza enemiga)
+                        if (this.validez[x1][y1]) {
+                            turno = !turno;
+                            if (tablero[y0][x0].toString().equals("P") && tablero[y0][x0].isJugadorA() && y1 == 7)
+                                // TODO: DIALOGO PARA CONVERTIR A LA PIEZA EN OTRA
+                                promocion(x1, y1, true);
+                            if (tablero[y0][x0].toString().equals("P") && !tablero[y0][x0].isJugadorA() && y1 == 0)
+                                promocion(x1, y1, false);
+                            if (!tablero[y0][x0].toString().equals("P") || (y1 != 7 && y1 != 0)) tablero[y1][x1] = tablero[y0][x0];
+                            tablero[y0][x0] = null;
+                            support.firePropertyChange("movimiento", false, true);
+                        }
                     }
                 }
             }

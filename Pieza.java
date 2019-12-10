@@ -2,6 +2,7 @@ import java.awt.geom.Point2D;
 
 public abstract class Pieza {
     private boolean jugadorA;
+    // JUGADOR A = SI ES FALSE -> ES EL DE ABAJO.
 
     public boolean isJugadorA() {
         return jugadorA;
