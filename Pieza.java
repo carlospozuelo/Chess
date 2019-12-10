@@ -129,7 +129,7 @@ public abstract class Pieza {
                     cota.setLocation(x0 - 1 - contador, y0 + 1 + contador);
                 else cota.setLocation(x0 - contador, y0 + contador);
                 cambiado = true;
-            } else if (x0 - 1 - contador == 7 || y0 + 1 + contador == 7) {
+            } else if (x0 - 1 - contador == 0 || y0 + 1 + contador == 7) {
                 cota.setLocation(x0 - 1 - contador, y0 + 1 + contador);
             }
             contador++;
