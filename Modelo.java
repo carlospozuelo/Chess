@@ -100,7 +100,6 @@ public class Modelo implements PropertyChangeListener {
                         if (this.validez[x1][y1]) {
                             turno = !turno;
                             if (tablero[y0][x0].toString().equals("P") && tablero[y0][x0].isJugadorA() && y1 == 7)
-                                // TODO: DIALOGO PARA CONVERTIR A LA PIEZA EN OTRA
                                 promocion(x1, y1, true);
                             if (tablero[y0][x0].toString().equals("P") && !tablero[y0][x0].isJugadorA() && y1 == 0)
                                 promocion(x1, y1, false);
