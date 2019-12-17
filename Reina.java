@@ -1,8 +1,18 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 public class Reina extends Pieza {
 
     @Override
     public String toString() {
         return "Q";
+    }
+
+    @Override
+    public BufferedImage getImage() throws IOException {
+        return ImageIO.read(new File("src/images/" + (super.isJugadorA()?"Black":"White") + "Queen.png"));
     }
 
     Reina(boolean isJugadorA) {

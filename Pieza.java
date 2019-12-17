@@ -1,4 +1,6 @@
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public abstract class Pieza {
     private boolean jugadorA;
@@ -160,7 +162,7 @@ public abstract class Pieza {
 
 
 
-
+    public abstract BufferedImage getImage() throws IOException;
 
     public abstract String toString();
 

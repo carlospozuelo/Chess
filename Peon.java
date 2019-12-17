@@ -1,3 +1,8 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 public class Peon extends Pieza {
 
     private Pieza[][] tablero;
@@ -5,6 +10,11 @@ public class Peon extends Pieza {
     @Override
     public String toString() {
         return "P";
+    }
+
+    @Override
+    public BufferedImage getImage() throws IOException {
+        return ImageIO.read(new File("src/images/" + (super.isJugadorA()?"Black":"White") + "Pawn.png"));
     }
 
     Peon(boolean isJugadorA, Pieza[][] tablero) {

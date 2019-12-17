@@ -1,8 +1,11 @@
 import javafx.scene.image.Image;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 
 public class Vista extends Canvas implements PropertyChangeListener {
 
@@ -42,7 +45,14 @@ public class Vista extends Canvas implements PropertyChangeListener {
                 if (tablero[i][j] != null) {
                     if (tablero[i][j].isJugadorA()) g2d.setColor(Color.black);
                     else g2d.setColor(Color.white);
-                    g2d.drawString(tablero[i][j].toString(), (j * CELLSIZE) + (int) ((offset/2) * CELLSIZE), ((i + 1) * CELLSIZE) - (int) ((offset/2) * CELLSIZE));
+                    BufferedImage img = null;
+                    try {
+                        img = tablero[i][j].getImage();
+                    } catch(Exception e) {
+                        System.out.println(e);
+                    }
+                    g2d.drawImage(img, (j) * CELLSIZE, (i) * CELLSIZE, CELLSIZE, CELLSIZE, null);
+                    //g2d.drawString(tablero[i][j].toString()img.toString(), (j * CELLSIZE) + (int) ((offset/2) * CELLSIZE), ((i + 1) * CELLSIZE) - (int) ((offset/2) * CELLSIZE));
                 }
             }
         }
