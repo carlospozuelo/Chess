@@ -79,6 +79,53 @@ public class Modelo implements PropertyChangeListener {
         turno = isJugadorA;
     }
 
+
+    /* TODO: CAMBIAR EL CODIGO PARA IMPLEMENTAR JAQUE*/
+
+    // Calcula si la posición actual es JAQUE
+    private boolean isJaque(boolean isJugadorA) {
+        int i = 0; int j = 0;
+        boolean encontrado = false;
+        // BUSCAR AL REY
+        while(i < tablero.length && !encontrado) {
+            j = 0;
+            while(j < tablero.length && !encontrado) {
+                if (tablero[i][j] != null && tablero[i][j].isJugadorA() == isJugadorA && tablero[i][j].toString().equals("R"))
+                    encontrado = true;
+                j++;
+            }
+            i++;
+        }
+        boolean jaque = false; i--; j--;
+        System.out.println("El rey está en ["+i+", "+j+"]");
+        if (encontrado) {
+            // COMPROBAR SI ESTÁ AMENAZADO
+            if (amenaza(j, i, !isJugadorA)) jaque = true;
+        }
+        return jaque;
+    }
+
+    // Devuelve si la casilla (x,y) está amenazada por alguna pieza del jugador isJugadorA
+    private boolean amenaza(int x, int y, boolean isJugadorA) {
+        boolean amenaza = false;
+        int i = 0;
+        while (i < tablero.length && !amenaza) {
+            int j = 0;
+            while (j < tablero.length && !amenaza) {
+                if (tablero[i][j] != null && tablero[i][j].isJugadorA() == isJugadorA) {
+                    // HAY PIEZA EN LA POSICION I J, Y DEL JUGADOR ISJUGADORA
+                    if(tablero[i][j].aceptable(j, i, x, y, tablero)) {
+                        amenaza = true;
+                        System.out.println("La pieza " + tablero[i][j] + " [" + j + ", " + i + "] amenaza a la posición ["+x+","+y+"]");
+                    }
+                }
+                j++;
+            }
+            i++;
+        }
+        return amenaza;
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("click")) {
@@ -105,6 +152,7 @@ public class Modelo implements PropertyChangeListener {
                                 promocion(x1, y1, false);
                             if (!tablero[y0][x0].toString().equals("P") || (y1 != 7 && y1 != 0)) tablero[y1][x1] = tablero[y0][x0];
                             tablero[y0][x0] = null;
+                            amenaza(x1, y1, !tablero[y1][x1].isJugadorA());
                             support.firePropertyChange("movimiento", false, true);
                         }
                     }
