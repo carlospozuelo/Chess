@@ -3,7 +3,6 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.sql.SQLOutput;
 
 public class Modelo implements PropertyChangeListener {
 
@@ -46,8 +45,18 @@ public class Modelo implements PropertyChangeListener {
     private void getValidez(int y, int x) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (tablero[y][x].aceptable(x, y, i, j, tablero))
-                    this.validez[i][j] = true;
+                if (tablero[y][x].aceptable(x, y, i, j, tablero)) {
+                    // ES UN MOVIMIENTO ACEPTABLE...
+                    // HAY QUE COMPROBAR SI EL MOVIMIENTO PROVOCA UN JAQUE
+                    // EL MOVIMIENTO NO SERÁ ACEPTABLE SI CONSIGUE QUE EL REY ESTÉ EN JAQUE
+                    Pieza aux = tablero[j][i];
+                    tablero[j][i] = tablero[y][x];
+                    tablero[y][x] = null;
+                    if (!isJaque(turno)) this.validez[i][j] = true;
+                    else print();
+                    tablero[y][x] = tablero[j][i];
+                    tablero[j][i] = aux;
+                }
             }
         }
         this.support.firePropertyChange("validez", false, true);
@@ -79,13 +88,10 @@ public class Modelo implements PropertyChangeListener {
         turno = isJugadorA;
     }
 
-
-    /* TODO: CAMBIAR EL CODIGO PARA IMPLEMENTAR JAQUE*/
-
-    // Calcula si la posición actual es JAQUE
+    // Calcula si el tablero actual produce JAQUE para el jugador pasado como parámetro
     private boolean isJaque(boolean isJugadorA) {
-        int i = 0; int j = 0;
         boolean encontrado = false;
+        int i = 0; int j = 0;
         // BUSCAR AL REY
         while(i < tablero.length && !encontrado) {
             j = 0;
@@ -96,8 +102,7 @@ public class Modelo implements PropertyChangeListener {
             }
             i++;
         }
-        boolean jaque = false; i--; j--;
-        System.out.println("El rey está en ["+i+", "+j+"]");
+        i--; j--; boolean jaque = false;
         if (encontrado) {
             // COMPROBAR SI ESTÁ AMENAZADO
             if (amenaza(j, i, !isJugadorA)) jaque = true;
@@ -126,39 +131,51 @@ public class Modelo implements PropertyChangeListener {
         return amenaza;
     }
 
+    private void handlePromotion(int x0, int y0, int x1, int y1) {
+        if (tablero[y0][x0].toString().equals("P") && tablero[y0][x0].isJugadorA() && y1 == 7)
+            promocion(x1, y1, true);
+        if (tablero[y0][x0].toString().equals("P") && !tablero[y0][x0].isJugadorA() && y1 == 0)
+            promocion(x1, y1, false);
+        if (!tablero[y0][x0].toString().equals("P") || (y1 != 7 && y1 != 0)) tablero[y1][x1] = tablero[y0][x0];
+    }
+
+    private void flujo(int x0, int y0, int x1, int y1) {
+        if (valido(x0, y0) && tablero[y0][x0] != null) {
+            // La casilla inicial es valida
+            if (tablero[y0][x0].isJugadorA() == this.turno) {
+                if (valido(x1, y1) && (tablero[y1][x1] == null || tablero[y1][x1].isJugadorA() != tablero[y0][x0].isJugadorA())) {
+                    // El destino es valido (dentro del tablero, movimiento aceptable y sin pieza o con una pieza enemiga)
+                    if (this.validez[x1][y1]) {
+                        turno = !turno;
+                        handlePromotion(x0, y0, x1, y1);
+                        tablero[y0][x0] = null;
+                        support.firePropertyChange("movimiento", false, true);
+                        if(isJaque(turno)) {
+                            System.out.println("EL REY "+ (turno?"NEGRO":"BLANCO") +" ESTÁ EN JAQUE");
+                        }
+                    }
+                }
+            }
+        }
+        support.firePropertyChange("soltar", false, true);
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("click")) {
             this.aux = (Point2D) evt.getNewValue();
             int x = getX(aux); int y = getY(aux);
             if (valido(x, y) && tablero[y][x] != null && tablero[y][x].isJugadorA() == this.turno) {
-                this.getValidez(y, x);
+                if (turno)
+                    this.getValidez(y, x);
+                else this.getValidez(y, x);
             }
         }
         if (evt.getPropertyName().equals("release")) {
             Point2D destino = (Point2D) evt.getNewValue();
             int x0 = getX(aux); int y0 = getY(aux);
             int x1 = getX(destino); int y1 = getY(destino);
-            if (valido(x0, y0) && tablero[y0][x0] != null) {
-                // La casilla inicial es valida
-                if (tablero[y0][x0].isJugadorA() == this.turno) {
-                    if (valido(x1, y1) && (tablero[y1][x1] == null || tablero[y1][x1].isJugadorA() != tablero[y0][x0].isJugadorA())) {
-                        // El destino es valido (dentro del tablero, movimiento aceptable y sin pieza o con una pieza enemiga)
-                        if (this.validez[x1][y1]) {
-                            turno = !turno;
-                            if (tablero[y0][x0].toString().equals("P") && tablero[y0][x0].isJugadorA() && y1 == 7)
-                                promocion(x1, y1, true);
-                            if (tablero[y0][x0].toString().equals("P") && !tablero[y0][x0].isJugadorA() && y1 == 0)
-                                promocion(x1, y1, false);
-                            if (!tablero[y0][x0].toString().equals("P") || (y1 != 7 && y1 != 0)) tablero[y1][x1] = tablero[y0][x0];
-                            tablero[y0][x0] = null;
-                            amenaza(x1, y1, !tablero[y1][x1].isJugadorA());
-                            support.firePropertyChange("movimiento", false, true);
-                        }
-                    }
-                }
-            }
-            support.firePropertyChange("soltar", false, true);
+            flujo(x0, y0, x1, y1);
         }
     }
 }
