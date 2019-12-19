@@ -58,13 +58,6 @@ public class Vista extends Canvas implements PropertyChangeListener {
         }
     }
 
-    public void vaciar() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                validez[i][j] = false;
-            }
-        }
-    }
 
     @Override
     public void propertyChange(PropertyChangeEvent e) {
@@ -72,7 +65,7 @@ public class Vista extends Canvas implements PropertyChangeListener {
 
         }
         if (e.getPropertyName().equals("soltar")) {
-            vaciar();
+
         }
         repaint();
     }

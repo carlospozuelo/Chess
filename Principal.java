@@ -41,7 +41,7 @@ public class Principal {
 
         Modelo modelo = new Modelo(supportModelo, tablero, validez);
         Vista vista = new Vista(tablero, validez);
-        vista.vaciar();
+        modelo.vaciar();
         Controlador controlador = new Controlador(supportControlador);
 
         supportModelo.addPropertyChangeListener(vista);

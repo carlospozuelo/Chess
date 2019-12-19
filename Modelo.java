@@ -41,8 +41,7 @@ public class Modelo implements PropertyChangeListener {
         return x >= 0 && x < 8 && y >= 0 && y < 8;
     }
 
-
-    private void getValidez(int y, int x) {
+    private void rellenarMatriz(int y, int x) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (tablero[y][x].aceptable(x, y, i, j, tablero)) {
@@ -53,12 +52,15 @@ public class Modelo implements PropertyChangeListener {
                     tablero[j][i] = tablero[y][x];
                     tablero[y][x] = null;
                     if (!isJaque(turno)) this.validez[i][j] = true;
-                    else print();
                     tablero[y][x] = tablero[j][i];
                     tablero[j][i] = aux;
                 }
             }
         }
+    }
+
+    private void getValidez(int y, int x) {
+        rellenarMatriz(y, x);
         this.support.firePropertyChange("validez", false, true);
     }
 
@@ -67,7 +69,7 @@ public class Modelo implements PropertyChangeListener {
         int opcion = JOptionPane.showOptionDialog(null, "¡Tu peón ha llegado hasta el final! Selecciona una ficha para transformarlo",
                 "Selecciona una pieza",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-        System.out.println(opcion);
+        // System.out.println(opcion);
         switch(opcion) {
             case 0:
                 tablero[y][x] = new Reina(isJugadorA);
@@ -121,7 +123,7 @@ public class Modelo implements PropertyChangeListener {
                     // HAY PIEZA EN LA POSICION I J, Y DEL JUGADOR ISJUGADORA
                     if(tablero[i][j].aceptable(j, i, x, y, tablero)) {
                         amenaza = true;
-                        System.out.println("La pieza " + tablero[i][j] + " [" + j + ", " + i + "] amenaza a la posición ["+x+","+y+"]");
+                        // System.out.println("La pieza " + tablero[i][j] + " [" + j + ", " + i + "] amenaza a la posición ["+x+","+y+"]");
                     }
                 }
                 j++;
@@ -152,12 +154,57 @@ public class Modelo implements PropertyChangeListener {
                         support.firePropertyChange("movimiento", false, true);
                         if(isJaque(turno)) {
                             System.out.println("EL REY "+ (turno?"NEGRO":"BLANCO") +" ESTÁ EN JAQUE");
+                            if (isCheckmate())
+                                System.out.println("JAQUE MATE");
                         }
                     }
                 }
             }
         }
+        vaciar();
         support.firePropertyChange("soltar", false, true);
+    }
+
+    public void vaciar() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                validez[i][j] = false;
+            }
+        }
+    }
+
+    // DEVUELVE TRUE SI LA FICHA SE PUEDE MOVER A ALGUNA CASILLA; FALSE SI NO.
+    private boolean puedeMover() {
+        boolean resul = false; int i = 0; int j = 0;
+        while (i < tablero.length && !resul) {
+            j = 0;
+            while (j < tablero.length && !resul) {
+                resul = this.validez[i][j];
+                j++;
+            }
+            i++;
+        }
+        return resul;
+    }
+
+
+    // FUNCION QUE COMPRUEBA SI UN JAQUE ES MATE. ES MATE SI EL JUGADOR NO PUEDE MOVER NINGUNA PIEZA QUE NO RESULTE EN UN JAQUE
+    private boolean isCheckmate() {
+        boolean resul = true; int i = 0;
+        while (i < tablero.length && resul) {
+            int j = 0;
+            while (j < tablero.length && resul) {
+                if (tablero[i][j] != null && tablero[i][j].isJugadorA() == turno) {
+                    // HEMOS ENCONTRADO UNA PIEZA DEL JUGADOR; ¿PUEDE DESHACER EL MATE?
+                    vaciar();
+                    rellenarMatriz(i, j);
+                    resul = !puedeMover();
+                }
+                j++;
+            }
+            i++;
+        }
+        return resul;
     }
 
     @Override
