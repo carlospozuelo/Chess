@@ -153,9 +153,9 @@ public class Modelo implements PropertyChangeListener {
                         tablero[y0][x0] = null;
                         support.firePropertyChange("movimiento", false, true);
                         if(isJaque(turno)) {
-                            System.out.println("EL REY "+ (turno?"NEGRO":"BLANCO") +" ESTÁ EN JAQUE");
                             if (isCheckmate())
-                                System.out.println("JAQUE MATE");
+                                JOptionPane.showMessageDialog(null, "Victoria para el jugador " + (turno? "blanco":"negro"), "Jaque mate", JOptionPane.INFORMATION_MESSAGE);
+                            else JOptionPane.showMessageDialog(null, "El jugador " + (turno? "negro": "blanco")  + " está en jaque", "Jaque", JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 }
@@ -204,6 +204,7 @@ public class Modelo implements PropertyChangeListener {
             }
             i++;
         }
+        vaciar();
         return resul;
     }
 
